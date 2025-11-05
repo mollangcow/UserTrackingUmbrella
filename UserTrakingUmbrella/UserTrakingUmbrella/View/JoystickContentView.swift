@@ -18,6 +18,8 @@ struct JoystickContentView: View {
                     .padding()
                 JoystickView(location: $leftJoystickLocation, label: "Throttle&Yaw")
             }
+            .padding(.trailing, 40)
+            
             VStack {
                 Text("(\(rightJoystickLocation.x, specifier: "%.2f"), \(rightJoystickLocation.y, specifier: "%.2f"))")
                     .padding()
