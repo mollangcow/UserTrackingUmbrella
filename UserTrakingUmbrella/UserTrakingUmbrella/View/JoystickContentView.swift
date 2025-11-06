@@ -13,18 +13,13 @@ struct JoystickContentView: View {
 
     var body: some View {
         HStack {
-            VStack {
-                Text("(\(leftJoystickLocation.x, specifier: "%.2f"), \(leftJoystickLocation.y, specifier: "%.2f"))")
-                    .padding()
-                JoystickView(location: $leftJoystickLocation, label: "Throttle&Yaw")
-            }
-            .padding(.trailing, 40)
+            JoystickView(location: $leftJoystickLocation, label: "Throttle&Yaw")
+                .padding(.leading, 40)
             
-            VStack {
-                Text("(\(rightJoystickLocation.x, specifier: "%.2f"), \(rightJoystickLocation.y, specifier: "%.2f"))")
-                    .padding()
-                JoystickView(location: $rightJoystickLocation, label: "Pitch&Roll")
-            }
+            Spacer()
+            
+            JoystickView(location: $rightJoystickLocation, label: "Pitch&Roll")
+                .padding(.trailing, 40)
         }
         .onAppear {
             self.leftJoystickLocation = CGPoint(x: 150, y: 150)
