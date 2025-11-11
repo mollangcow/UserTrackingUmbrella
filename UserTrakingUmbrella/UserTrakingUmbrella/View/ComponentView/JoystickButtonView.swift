@@ -72,8 +72,7 @@ struct JoystickButtonView: View {
             ZStack {
                 // 외부 원
                 Circle()
-                    .fill(Color.secondary.opacity(0.1))
-//                    .stroke(Color.secondary.opacity(0.3), lineWidth: 2)
+                    .fill(Color.secondary.opacity(0.2))
                     .frame(width: maxRadius * 2, height: maxRadius * 2)
                     .overlay(
                         Image(systemName: "plus")
