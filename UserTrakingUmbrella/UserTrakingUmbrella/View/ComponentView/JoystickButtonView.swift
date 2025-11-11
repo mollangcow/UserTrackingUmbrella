@@ -12,12 +12,12 @@ struct JoystickButtonView: View {
 
     let label: String
     
-    // 조이스틱의 최대 반경 (외부 원의 반경)
-    let maxRadius: CGFloat = 100
-    // 내부 원(손잡이)의 크기
-    let knobSize: CGFloat = 100
+    // 외부 원 반경
+    let maxRadius: CGFloat = 80
+    // 내부 원 크기
+    let knobSize: CGFloat = 80
     
-    // 내부 원(손잡이)의 현재 오프셋(이동) 상태
+    // 내부 원 현재 오프셋 이동 상태
     @State private var knobOffset: CGPoint = .zero
     @State private var hasReachedEdge = false
 
@@ -58,6 +58,8 @@ struct JoystickButtonView: View {
 
     var body: some View {
         VStack {
+            Spacer()
+            
             Text("(\(location.x, specifier: "%.2f"), \(location.y, specifier: "%.2f"))")
                 .monospacedDigit()
             
@@ -65,11 +67,13 @@ struct JoystickButtonView: View {
                 .font(.body)
                 .bold()
             
+            Spacer()
+            
             ZStack {
-                // 1. 외부 원 (조이스틱 배경)
+                // 외부 원
                 Circle()
-                    .fill(Color.secondary.opacity(0.2))
-                    .stroke(Color.secondary.opacity(0.4), lineWidth: 2)
+                    .fill(Color.secondary.opacity(0.1))
+//                    .stroke(Color.secondary.opacity(0.3), lineWidth: 2)
                     .frame(width: maxRadius * 2, height: maxRadius * 2)
                     .overlay(
                         Image(systemName: "plus")
@@ -77,17 +81,13 @@ struct JoystickButtonView: View {
                             .foregroundStyle(Color.secondary)
                     )
                 
-                // 2. 내부 원 (손잡이)
+                // 내부 원
                 Circle()
-                    .fill(Color.green)
-                    .overlay(
-                        Circle()
-                            .strokeBorder(Color.white.opacity(0.5), lineWidth: 4)
-                    )
+                    .fill(Color.gray)
                     .frame(width: knobSize, height: knobSize)
-                    // knobOffset 값에 따라 중앙에서부터 이동합니다.
+                    // knobOffset 값에 따라 중앙에서부터 이동
                     .offset(x: knobOffset.x, y: knobOffset.y)
-                    .gesture(fingerDrag) // 제스처 손잡이 적용
+                    .gesture(fingerDrag)
                     .sensoryFeedback(.impact(weight: .light, intensity: 0.5), trigger: knobOffset)
                     .sensoryFeedback(.impact(weight: .heavy), trigger: hasReachedEdge)
             }
@@ -98,5 +98,6 @@ struct JoystickButtonView: View {
             self.knobOffset = .zero
             self.location = .zero
         }
+        .padding(.bottom, 20)
     }
 }
