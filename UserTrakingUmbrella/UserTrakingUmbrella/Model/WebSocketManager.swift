@@ -15,6 +15,7 @@ struct ControlData: Codable {
     var yaw: Int
     var throttle: Int
     var aux1: Int
+    var aux2: Int
 }
 
 @MainActor
@@ -75,11 +76,11 @@ class WebSocketManager: NSObject, ObservableObject, URLSessionWebSocketDelegate 
     }
     
     // RC 제어 데이터(JSON)를 RPi로 전송
-    func sendControlData(roll: Int, pitch: Int, yaw: Int, throttle: Int, aux1: Int) {
+    func sendControlData(roll: Int, pitch: Int, yaw: Int, throttle: Int, aux1: Int, aux2: Int) {
 
         guard isConnected else { return }
 
-        let controlData = ControlData(roll: roll, pitch: pitch, yaw: yaw, throttle: throttle, aux1: aux1)
+        let controlData = ControlData(roll: roll, pitch: pitch, yaw: yaw, throttle: throttle, aux1: aux1, aux2: aux2)
 
         do {
             let jsonData = try JSONEncoder().encode(controlData)

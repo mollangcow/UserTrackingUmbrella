@@ -9,17 +9,22 @@ import SwiftUI
 
 struct JoystickButtonView: View {
     @Binding var location: CGPoint
+    
 
     let label: String
     
-    // 외부 원 반경
     let maxRadius: CGFloat = 80
-    // 내부 원 크기
     let knobSize: CGFloat = 80
     
-    // 내부 원 현재 오프셋 이동 상태
+    let deadZone: CGFloat = 20.0
+    
+
     @State private var knobOffset: CGPoint = .zero
     @State private var hasReachedEdge = false
+    
+    @State private var isXInsideDeadZone = true
+    @State private var isYInsideDeadZone = true
+
 
     var fingerDrag: some Gesture {
         DragGesture()
@@ -28,6 +33,18 @@ struct JoystickButtonView: View {
                 let translation = value.translation
                 // 피타고라스 정리를 사용해 중심으로부터의 거리 계산
                 let distance = sqrt(pow(translation.width, 2) + pow(translation.height, 2))
+                
+                // 1. [변경] 데드존 햅틱 로직 (XY축 독립 판정)
+                // X축 좌표가 데드존(-20 ~ 20) 내부에 있는지 확인
+                let currentXInside = abs(translation.width) <= deadZone
+                if currentXInside != isXInsideDeadZone {
+                    isXInsideDeadZone = currentXInside
+                }
+                // Y축 좌표가 데드존(-20 ~ 20) 내부에 있는지 확인
+                let currentYInside = abs(translation.height) <= deadZone
+                if currentYInside != isYInsideDeadZone {
+                    isYInsideDeadZone = currentYInside
+                }
                 
                 // 만약 거리가 maxRadius(최대 반경)를 초과하면
                 if distance > maxRadius {
@@ -53,6 +70,10 @@ struct JoystickButtonView: View {
                 self.knobOffset = .zero
                 self.location = .zero
                 self.hasReachedEdge = false
+                
+                // 상태 초기화 (중앙으로 돌아오므로 Inside = true)
+                self.isXInsideDeadZone = true
+                self.isYInsideDeadZone = true
             }
     }
 
@@ -87,8 +108,10 @@ struct JoystickButtonView: View {
                     // knobOffset 값에 따라 중앙에서부터 이동
                     .offset(x: knobOffset.x, y: knobOffset.y)
                     .gesture(fingerDrag)
-                    .sensoryFeedback(.impact(weight: .light, intensity: 0.5), trigger: knobOffset)
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: hasReachedEdge)
+                    .sensoryFeedback(.impact(weight: .light, intensity: 0.4), trigger: knobOffset)
+                    .sensoryFeedback(.impact(weight: .heavy, intensity: 1.5), trigger: hasReachedEdge)
+                    .sensoryFeedback(.impact(weight: .medium), trigger: isXInsideDeadZone)
+                    .sensoryFeedback(.impact(weight: .medium), trigger: isYInsideDeadZone)
             }
             .frame(width: maxRadius * 2, height: maxRadius * 2)
         }
@@ -100,3 +123,4 @@ struct JoystickButtonView: View {
         .padding(.bottom, 20)
     }
 }
+
