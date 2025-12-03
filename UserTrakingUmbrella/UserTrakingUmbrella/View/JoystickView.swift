@@ -53,8 +53,8 @@ struct JoystickView: View {
             // 조이스틱 값(-80~80)을 RC 값(1000~2000)으로 변환하여 전송
             let throttle = mapJoystickValue(leftJoystickLocation.x, reversed: false)
             let yaw = mapJoystickValue(leftJoystickLocation.y)
-            let pitch = mapJoystickValue(rightJoystickLocation.x, reversed: false)
-            let roll = mapJoystickValue(rightJoystickLocation.y)
+            let pitch = mapJoystickValue(rightJoystickLocation.y, reversed: true)
+            let roll = mapJoystickValue(rightJoystickLocation.x, reversed: false)
             
             let aux1 = isArmed ? 2000 : 1000
             let aux2 = isHoverMode ? 2000 : 1000
